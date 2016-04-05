@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<!-- The html markup of the room status screen -->
+<html>
+  <head>
+    
+	<meta name="viewport" content="width=340; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="jquery.alerts.css" type="text/css" media="screen" title="no title" charset="utf-8">
+   
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="iscroll.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="roomstatus.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="Meeting.js"></script>
+	 
+	  <script type="text/javascript" charset="utf-8" src="BusyFreeStatus.js"></script>
+	  
+	  
+	 <script type="text/javascript" charset="utf-8">
+	  	  var cog = new Image();
+            function init() {
+                cog.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABK1JREFUeNqMVt1ZGzkUvVfS4IW1l8GO82w6IBXE7mCpAFMB+Pt4Z6iApALcAe4AU0HoAJfg7BPYHinnXmmciX+y0YdmJHnQ0bk/R5cvh5cUyFPwRD4EChgEvGWMB36R3+JaiTkmD5gOs8yNb25uLlerFf1pM2yIGA82TEY7xow1oj4GBU6S6yywPNG4JwDH+XGv0Whs7ndN8n97mmPsLCSYgy7ImPQE/pFDyAF+7L0fgTNFUDBcLal90taD1doQ/T6NT9DnW8zkT+jJuQVYukG3hifCVk/L3JOxMBa8VVlSp9MhHKLaB+zpNo1fdgEpmByuMqUAV5viOQLwXNax9KBAFNEEpN1pUwnQmvl6aTza6zNjrCKaymeyOdYAMgfg18iG4T/qw+AC94zvpzDjcwqOXo3VGH26H0xMZ7jPxgT0R2zUi4BYt6bAfEbJvJFZKA4ODgZ5nhcJLE9mk35X21vWC/TXKmiwr2xszoQd/PQv3t/QCzY2twpqBpb5FKOp+hCgzWaTWq0W1Xx0ij5An9WC5VtiLMwvNBrVaSGMvQk5jHQVPN7sb0HzAtE+QJrNgrcUNEARieWCut0ugR0tl8sKcJ5Ahc3jRviPK8ZGTaaBwGKyT+gTiwM4a3Jrba6MbeVXo5F4kp9shn29ndUYC9vLirGDXzRhrYhD8DME5Hkg22df5rDYS/RXmVIsaP/Q/SXs600YnifTjbeSWliEdTYb3QyTqYfdDKTL4B1KS6tVqf6SgGq3P9BvZGpvNIrPCgVKZlGlCDQDxJiCjVppCab05DJHzb+b1Gm36X80cVjLuzozexs0f6IgRkA5XRhzIixRL1+IzhwdHVHrn1Y9oXe1i10aKT6bGGhg1CKK+cT0zCGCs0oXTIogybJMw/779//o48duMvnO9rzLn+Kz8wgS5Shqo4njpCoOQA5Ajb8adHh4SMvVghaLhYb/HsBip88krNVISSEigOlhjmi0LziNhr6wOsgO9C1339vbGznnNAU2AM9Svk235cqKieKGkldAf7DGvTrjnjJnzyQoMu0ZTuZgUqvmlYR+f39XIE4uqCX1E/rDZpCYmKwOOmivAfYK9KF1AM7EdG4uAMLAOjmQideQXOJQkyUisqYiFRhtSFbxCxj8do0T30dmTvLhC+an0MZZVBHX09tBTG4qFigZEJEChjTIEwtRik81Qa7uOQU0IrYAe7FRjqYw6SlYjgAyN1GmHsFIGPfVnxzFuFITKEkfYK+oWZ5qKlIkcZ7UE92oXBmeIgIxtAO5UtSHqo9uiLW+sme5ejSIRASeAFR4LYy8MMzL1aq3EYWzJF28BgMEzGYpBkrMKelgl+P6uTcVY8NjLYyYPwMTCcufSaouH6al9xNJcjC82vDb9uVZKbrWIumNO+waVsu1TCC+Wxcg6xaSpsZSYM2wLO9/U8qZWH+wztQnsfAxV/E3MIKZVf1FsmJVV8mamhEmxZ0X7sSsABsGv1tZJGejmptU7FBUDYzPAXQBwFEEl+9+stFEroJEci2ELwIMmZuWoSTE9DYYcWVCjlJrZWMpeBhlAEqBiulPE84S3ixU5gSTwGGOdyEVNJXxA8nPevshwABHktBS1YoQ+QAAAABJRU5ErkJggg=='; // Set source path
+                setInterval(draw,10);
+            }
+            var rotation = 0;
+            function draw(){
+                var ctx = document.getElementById('myCanvas').getContext('2d');
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.save();
+                ctx.clearRect(0,0,27,27);
+                ctx.translate(13.5,13.5); // to get it in the origin
+                rotation +=1;
+                ctx.rotate(rotation*Math.PI/64); //rotate in origin
+                ctx.translate(-13.5,-13.5); //put it back
+                ctx.drawImage(cog,0,0);
+                ctx.restore();
+            }
+            
+	  	  
+	  	  	  	  
+	  	  
+	  	  
+	  	  function back()
+	  	  {
+	  	   navigator.app.loadUrl("file:///android_asset/www/index.html");
+	  	  }
+	  document.addEventListener("backbutton", function () { 
+       // alert('Back button');
+        navigator.app.loadUrl("file:///android_asset/www/index.html");
+    }, false); 
+    
+   
+	  </script>
+	  
+<style type="text/css">	  
+	  
+.button {
+	display: inline-block;
+	zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+	*display: inline;
+	vertical-align: baseline;
+	margin: 0 2px;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	font: 14px/100% Arial, Helvetica, sans-serif;
+	padding: .5em 2em .55em;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	width:80px;
+}
+.button:hover {
+	text-decoration: none;
+}
+.button:active {
+	position: relative;
+	top: 1px;
+}
+
+
+.gray {
+	color: #e9e9e9;
+	border: solid 1px #555;
+	background: #6e6e6e;
+	background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
+	background: -moz-linear-gradient(top,  #888,  #575757);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+}
+.gray:hover {
+	background: #616161;
+	background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
+	background: -moz-linear-gradient(top,  #757575,  #4b4b4b);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+}
+.gray:active {
+	color: #afafaf;
+	background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888));
+	background: -moz-linear-gradient(top,  #575757,  #888);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+}
+
+h1 { font-size:16pt;}
+p {font-size:14pt;}
+</style>
+	  
+	  
+	  
+  </head>
+<body onload="init_status();">
+<div id="wrapper">
+<br>
+<center><h1 id="title" style="color:#0099FF;display:inline">NetApp</h1> &nbsp;<h1  style="display:inline">Conference OnTheGo</h1></center>
+	
+  		<div id="roomStatus">
+  			
+  			  <p id="name"></p>
+  			 <p id="busyFree"></p>
+  			   			 
+  		 </div>
+    	<br>  	  
+  	<div id="radio_buttons" >
+  	<input type="radio" name="timeslot" style="display:inline; display:none;" id="fourth" value="next half an hour"/><p id="fourth_text" style="display:inline;font-size:13pt;"></p><br>
+  	<input type="radio" name="timeslot" style="display:inline; display:none;" id="fifth" value="next one hour"/><p id="fifth_text" style="display:inline;font-size:13pt;"></p>
+  	
+  	<input type="radio" name="timeslot" style="display:inline; display:none; " id="first" value="half an hour" checked /><p id="first_text"  style="display:inline;font-size:13pt;"></p><br>
+  	<input type="radio" name="timeslot" style="display:inline; display:none;" id="second" value="1 hour" /><p id="second_text" style="display:inline;font-size:13pt;" ></p><br>
+  	<input type="radio" name="timeslot" style="display:inline; display:none;" id="third" value="1 and half an hour" /><p id="third_text" style="display:inline;font-size:13pt;" ></p>
+  	
+  	</div>
+  	 
+  	
+  	 
+  		<center>
+  		<a href="#" class="button gray" id="btn_large" onclick="book();" style="display:none; ">BOOK</a> &nbsp;&nbsp;&nbsp;&nbsp;
+  		<a href="#" class="button gray" id="btn_back" onclick="back();" style="display:none; ">No&nbsp;Thanks</a> <br><br><br>
+  		<a href="#" class="button gray" id="btn_suggest" onclick="suggest();" style="display:none; ">Suggestions</a> <br>
+  		<p id="loadText"></p>
+  		</center>
+  		<br><br>
+   <center>
+	
+	
+	<canvas width="27" height="27" id="myCanvas"></canvas> <p id="load"> Fetching data.. </p>
+	
+	
+	</center>
+	<br>
+  
+  
+</div>
+  </body>
+</html>

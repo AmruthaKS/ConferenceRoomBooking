@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<!-- The html markup of the Scan screen -->
+<html>
+  <head>
+    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    
+	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	  <link rel="stylesheet" href="jquery.alerts.css" type="text/css" media="screen" title="no title" charset="utf-8">
+   
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="barcodescanner.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="BusyFreeStatus.js"></script>
+	  <script type="text/javascript" charset="utf-8" src="roomstatus.js"></script>
+	  
+	 	
+	 <script type="text/javascript" charset="utf-8">
+	 function init(){
+       // console.log("GOT AN ONLOAD!!!")
+        //document.addEventListener("touchmove", preventBehavior, false);
+        document.addEventListener("deviceready", deviceInfo, true);     
+    }
+    document.addEventListener("backbutton", function () { 
+        //alert('Back button');
+       showConfirm();
+       // navigator.app.loadUrl("file:///android_asset/www/login.html");
+    }, false); 
+    
+    function showConfirm() {
+        navigator.notification.confirm(
+            'Exit the App !!',  // message
+            onConfirm,              // callback to invoke with index of button pressed
+            'Exit',            // title
+            'Yes,No'          // buttonLabels
+        );
+    }
+    function onConfirm(button) {
+        //alert('You selected button ' + button);
+        if(button == 1)
+        	navigator.app.exitApp();
+        
+    }
+    
+    var preventBehavior = function(e) { 
+      e.preventDefault(); 
+    };
+      
+    var deviceInfo = function(){      
+      //console.log("In deviceInfo!");
+     
+    }
+      
+    function scan() {
+        window.plugins.barcodeScanner.scan(function(result) {
+                
+                      if(result.text == "")
+                      {
+                       //scanning aborted.. didnt capture any image..
+                      }
+                      else
+                      {
+                         //alert("We got a QRCode\n" +"Result: " + result.text + "\n" );
+                      	 status(result.text);
+                       }
+            }, function(error) {
+                navigator.notification.alert(
+            'Scanning failed',  // message
+            alertDismissed,         // callback
+            'Oops..!!',            // title
+            'Try Again'                  // buttonName
+        );
+	
+            });
+            
+    }
+      
+  function alertDismissed() {
+        // do something
+    }
+  
+   function trim(s) {
+	s = s.replace(/(^\s*)|(\s*$)/gi,"");
+	s = s.replace(/[ ]{2,}/gi," ");
+	s = s.replace(/\n /,"\n");
+	return s;
+}
+  
+    function book_by_name()
+    {
+      
+   
+    // form the mail id and pass it to status function
+    var x=document.getElementById("cr_select").selectedIndex;
+	var y=document.getElementsByTagName("option");
+	var mail_id = "cr-"
+	mail_id += y[x].text+".";
+	var roomName = document.getElementById("cr_name").value;
+	var room = trim(roomName);
+	if (room == "")
+	{
+	
+	navigator.notification.alert(
+            'Enter the room number',  // message
+            alertDismissed,         // callback
+            'Fill Details',            // title
+            'OK'                  // buttonName
+        );
+	
+	
+	
+	}
+	else {
+	
+	var room_number = room.split(".");
+	//alert("the val is "+parseInt(room_number[1])+"--"+parseInt(room_number[2]));
+	if( ( (parseInt(room_number[1])) >= 0) &&( (parseInt(room_number[2])) >= 0))
+	{
+	var c = y[x].text.split("-");	
+	if(room_number[0] != c[0])
+	document.getElementById("cr_name").value = c[0]+"."+room_number[1]+"."+room_number[2];
+	mail_id += room_number[1]+"."+room_number[2]+"@netapp.com";
+	//alert("The mail id formed is.."+mail_id);
+    status(mail_id);
+    }
+    else
+    {
+      
+	  
+	navigator.notification.alert(
+            'Incorrect room number',  // message
+            alertDismissed,         // callback
+            'Agrhh..!!',            // title
+            'Try Again'                  // buttonName
+        );
+	document.getElementById("cr_name").value = "";
+	
+    }
+    }
+    }
+    
+  </script>
+  <style type="text/css">
+		
+		h2 { font-size:16pt;}
+		#loading { display:none;  width:100%; height:100%;  }
+		p{margin-left:20px; font-size:14pt; display:inline;}
+		
+		.button {
+	
+	margin: 0 2px;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	font: 14px/100% Arial, Helvetica, sans-serif;
+	padding: .5em 2em .55em;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	 margin-left:20px;
+	width:50px;
+	 
+}
+.button:hover {
+	text-decoration: none;
+}
+.button:active {
+	position: relative;
+	top: 1px;
+}
+
+
+
+.gray {
+	color: #e9e9e9;
+	border: solid 1px #555;
+	background: #6e6e6e;
+	background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
+	background: -moz-linear-gradient(top,  #888,  #575757);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+}
+.gray:hover {
+	background: #616161;
+	background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
+	background: -moz-linear-gradient(top,  #757575,  #4b4b4b);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+}
+.gray:active {
+	color: #afafaf;
+	background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888));
+	background: -moz-linear-gradient(top,  #575757,  #888);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+}
+
+	#cr_select { height:25px; width:100px; }
+	#cr_name {height:23px; width:90px;}	
+	
+	  </style>
+  </head>
+  
+  <body onload="init();" id="stage" class="theme">
+  <div id="wrapper">
+  <br>
+  <center><h2 id="title" style="color:#0099FF;display:inline">NetApp</h2> &nbsp;<h2  style="display:inline">Conference OnTheGo</h2></center>
+	<br>
+   <center><p> In Front of the Room ?</p></center>
+    <center><a href="#" class="btn large" onclick="scan();">Scan QR-Code</a></center>
+    <br><br>
+    <center><img src="or_new.png" height="35px" style="width:100%"></center>
+    <br><br>
+    
+    <p> Know your Room ?</p>
+   <br><br>
+   <p> Where ? &nbsp;&nbsp;: &nbsp;&nbsp;
+   </p>
+<select id="cr_select">
+  <option selected="selected">NB-1</option>
+  <option>NB-2</option>
+  <option>NB-3</option>
+ 
+</select>
+<br><br>
+<p>
+  Meet At ? : &nbsp;&nbsp; </p> <input type="text" id="cr_name" placeholder="Eg: NB.1.321"> 
+<br><br>
+<a href="#" class="button gray" id="go_button" onclick="book_by_name();">Next</a> <br>
+<br>
+
+    </body>
+  </div>
+</html>

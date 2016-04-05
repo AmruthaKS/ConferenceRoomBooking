@@ -1,0 +1,424 @@
+<!DOCTYPE HTML>
+<!-- The html markup of the Suggestions screen -->
+<html>
+<head>
+
+<title>Suggestions</title>
+<meta name="viewport" content="width=340; user-scalable=no" />
+   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+     <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+     <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+     <script type="text/javascript" charset="utf-8" src="Meeting.js"></script>
+	 
+   
+<style type="text/css">
+#room_style
+{
+	background:#444;
+	border: 1px solid #555;
+	color:#9ab;
+	padding:1.2em 0;
+  	margin:3px 0px 3px 5px;
+	
+	text-decoration:none;
+	
+	text-align:center;
+	-webkit-border-radius: 7px;
+  	border-radius: 7px;
+  	display:block;
+  	font-size:14pt;
+  	
+}
+a
+{
+text-decoration:none;
+color:#9ab;
+}
+.button {
+	display: inline-block;
+	zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+	*display: inline;
+	vertical-align: baseline;
+	margin: 0 2px;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	font: 14px/100% Arial, Helvetica, sans-serif;
+	padding: .5em 2em .55em;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	width:80px;
+}
+.button:hover {
+	text-decoration: none;
+}
+.button:active {
+	position: relative;
+	top: 1px;
+}
+
+
+.gray {
+	color: #e9e9e9;
+	border: solid 1px #555;
+	background: #6e6e6e;
+	background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
+	background: -moz-linear-gradient(top,  #888,  #575757);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+}
+.gray:hover {
+	background: #616161;
+	background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
+	background: -moz-linear-gradient(top,  #757575,  #4b4b4b);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+}
+.gray:active {
+	color: #afafaf;
+	background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888));
+	background: -moz-linear-gradient(top,  #575757,  #888);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+}
+
+</style>
+<script type="text/javascript">
+var roomName;
+var free60 = ""
+var free30 = ""
+var busy30 = ""
+var time;
+var building;
+function greet1(event)
+{
+	init_status();
+	var e = event.indexOf(':');
+	var e2 = event.indexOf('<');
+	var room1 = event.substring(event.indexOf(':')+1);
+	var room = room1.substring(0,room1.indexOf('<'));
+	roomName = room;
+	
+	 var strDate = decodeURIComponent(time[1]);
+	 //console.log("The value of date received is.."+strDate);
+   var dateParts = strDate.split(".");
+   var setStartTime;
+   if( parseInt(dateParts[4] ) == 0 ) 
+   {
+   		//console.log("its zero......!!!!!");
+   		dateParts[4] = "00";
+   }
+   	else
+   	{
+   		dateParts[4] = 30;
+   	}
+	if (dateParts[3] < 12)
+	 setStartTime = "Start Time :"+ dateParts[3] + ":" + dateParts[4] + " AM";
+	else if(dateParts[3] == 12)
+	 setStartTime = "Start Time :"+ dateParts[3] + ":" + dateParts[4] + " PM";
+	else
+	setStartTime = "Start Time : "+ dateParts[3] % 12 + ":" + ( dateParts[4]) + " PM";
+	starttime = decodeURIComponent(time[1]);
+	var startTime_new = setStartTime;
+	var endTime = startTime_new.split(":");
+	// endTime[1] refers to hours
+	//  endTime[2] refers to minutes and AM/PM
+	var minutes = endTime[2].split(" ");
+	// minutes[0] refers to number of minutes 
+	// minutes[1] refers to AM or PM
+	
+	var sTime = endTime[1]+":"+endTime[2];
+	//console.log("the split values for calculating the endtime are "+endTime[1]+"hours "+minutes[0]+" minutes "+minutes[1]);
+	var endHours = parseInt(endTime[1]);
+	var endMinutes = parseInt(minutes[0]);
+	var timeFrame = minutes[1];
+	
+	var endHours1,endMinutes1,timeFrame1,endHours2,endMinutes2,timeFrame2,endHours3,endMinutes3,timeFrame3;
+	function alertDismissed() {
+        // do something
+    }
+	if(endMinutes == 0)
+	{
+		//for first half an hour slot..
+		endHours1 = endHours;
+		endMinutes1 = 30;
+		timeFrame1 = timeFrame;
+		
+		//for the 1 hour slot
+		endHours2 = endHours+1;
+		endMinutes2 = endMinutes;
+		if(endHours2 >= 12)
+		{
+			timeFrame2 = "PM";
+			if(endHours2 > 12)
+				endHours2 = endHours2 % 12;
+		}
+		else
+		    timeFrame2 = timeFrame;
+		    
+		//for 1 and half an hour slot..
+		endHours3 = endHours+1;
+		endMinutes3 = 30;
+		if(endHours3 >= 12)
+		{
+			timeFrame3 = "PM";
+			if(endHours3 > 12)
+				endHours3 = endHours3 % 12;
+		}
+		else
+		    timeFrame3 = timeFrame;
+	
+	}
+	else if(endMinutes == 30 )
+	{
+		//for the first half an hour slot
+		endHours1 = endHours+1;
+		endMinutes1 = 0;
+		if(endHours1 >= 12)
+		{
+			timeFrame1 = "PM";
+			if(endHours1 > 12)
+				endHours1 = endHours1 % 12;
+		}
+		else
+		    timeFrame1 = timeFrame;
+		    
+		//for the 1 hour slot
+		endHours2 = endHours+1;
+		endMinutes2 = endMinutes;
+		if(endHours2 >= 12)
+		{
+			timeFrame2 = "PM";
+			if(endHours2 > 12)
+				endHours2 = endHours2 % 12;
+		}
+		else
+		    timeFrame2 = timeFrame;
+		    
+		//for 1 and half an hour
+		endHours3 = endHours+2;
+		endMinutes3 = 0;
+		if(endHours3 >= 12)
+		{
+			timeFrame3 = "PM";
+			if(endHours3 > 12)
+				endHours3 = endHours3 % 12;
+		}
+		else
+		    timeFrame3 = timeFrame;
+		
+	
+	}
+	if (endMinutes1 == 0)
+		endMinutes1 = "00";
+	if (endMinutes2 == 0)
+		endMinutes2 = "00";
+	if (endMinutes3 == 0)
+		endMinutes3 = "00";
+
+	var s = document.getElementsByTagName("div");
+	//alert("the number of so called tags is.."+s.length);
+	for(var i=0;i<s.length;i++)
+	{
+		if((s[i].innerHTML.indexOf("Free") != -1)&&(s[i].innerHTML.indexOf("90") !=-1)&&(s[i].innerHTML.indexOf(room) != -1)&&(s[i].innerHTML.indexOf("book") == -1))
+		{
+  			
+  			var htmlContent = "<p> Book for..</p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="first" value="half an hour" checked /><p id="first_text"  style="display:inline;font-size:13pt;">'+"30 minutes "+"[ "+sTime+" - "+endHours1+":"+endMinutes1+" "+timeFrame1+" ]<br></p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="second" value="one hour"  /><p id="first_text"  style="display:inline;font-size:13pt;">'+"60 minutes "+"[ "+sTime+" - "+endHours2+":"+endMinutes2+" "+timeFrame2+" ]<br></p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="third" value="one hour"  /><p id="first_text"  style="display:inline;font-size:13pt;">'+"90 minutes "+"[ "+sTime+" - "+endHours3+":"+endMinutes3+" "+timeFrame3+" ]<br></p><br>"+
+			'<a href="#" class="button gray" id="btn_large1" onclick="book(roomName,starttime,3);">'+"BOOK</a> &nbsp;&nbsp;&nbsp;&nbsp;";
+  			s[i].innerHTML += htmlContent;
+  			s[i].onclick = "event.cancelBubble = true;";
+		}
+		else if((s[i].innerHTML.indexOf("Free") != -1)&&(s[i].innerHTML.indexOf("60") !=-1)&&(s[i].innerHTML.indexOf(room) != -1)&&(s[i].innerHTML.indexOf("book") == -1))
+		{
+			var htmlContent = "<p> Book for..</p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="first" value="half an hour" checked /><p id="first_text"  style="display:inline;font-size:13pt;">'+"30 minutes "+"[ "+sTime+" - "+endHours1+":"+endMinutes1+" "+timeFrame1+" ]<br></p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="second" value="one hour"  /><p id="first_text"  style="display:inline;font-size:13pt;">'+"60 minutes "+"[ "+sTime+" - "+endHours2+":"+endMinutes2+" "+timeFrame2+" ]<br></p><br>"+
+			'<a href="#" class="button gray" id="btn_large1" onclick="book(roomName,starttime,2);">'+"BOOK</a> &nbsp;&nbsp;&nbsp;&nbsp;";
+  			s[i].innerHTML += htmlContent;
+  			s[i].onclick = "event.cancelBubble = true;";
+		}
+		else if((s[i].innerHTML.indexOf("Free") != -1)&&(s[i].innerHTML.indexOf("30") !=-1)&&(s[i].innerHTML.indexOf(room) != -1)&&(s[i].innerHTML.indexOf("book") == -1))
+		{
+			var htmlContent = "<p> Book for..</p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="first" value="half an hour" checked /><p id="first_text"  style="display:inline;font-size:13pt;">'+"30 minutes "+"[ "+sTime+" - "+endHours1+":"+endMinutes1+" "+timeFrame1+" ]<br></p><br>"+
+			'<a href="#" class="button gray" id="btn_large1" onclick="book(roomName,starttime,1);">'+"BOOK</a> &nbsp;&nbsp;&nbsp;&nbsp;";
+  			s[i].innerHTML += htmlContent;
+  			s[i].onclick = "event.cancelBubble = true;";
+		}
+		else if((s[i].innerHTML.indexOf("Busy") != -1)&&(s[i].innerHTML.indexOf("30") !=-1)&&(s[i].innerHTML.indexOf(room) != -1)&&(s[i].innerHTML.indexOf("book") == -1))
+		{
+			var htmlContent = "<p> Book for..</p><br>"+
+			'<input type="radio" name="timeslot" style="display:inline;" id="fourth" value="half an hour" checked /><p id="first_text"  style="display:inline;font-size:13pt;">'+"30 minutes "+"[ "+endHours1+":"+endMinutes1+" "+timeFrame1+" - "+endHours2+":"+endMinutes2+" "+timeFrame2+" ]<br></p><br>"+
+			'<a href="#" class="button gray" id="btn_large1" onclick="book(roomName,starttime,4);">'+"BOOK</a> &nbsp;&nbsp;&nbsp;&nbsp;";
+  			s[i].innerHTML += htmlContent;
+  			s[i].onclick = "event.cancelBubble = true;";
+		}
+		
+		
+	}
+	
+	
+}
+function book(room_name,starttime,num)
+{
+	
+	//alert("implement book"+room_name+"--"+starttime+"--"+num);
+	endtime = "s0";
+	if(num == 3)
+	{
+		if(document.getElementById("first").checked)
+			endtime = "s1";
+		else if(document.getElementById("second").checked)
+			endtime = "s2";
+		else if(document.getElementById("third").checked)
+			endtime = "s3";
+	}
+	if(num == 2)
+	{
+		if(document.getElementById("first").checked)
+			endtime = "s1";
+		else if(document.getElementById("second").checked)
+			endtime = "s2";
+		
+	}
+	if(num == 1)
+	{
+		if(document.getElementById("first").checked)
+			endtime = "s1";
+		
+	}
+	if(num == 4)
+	{
+		if(document.getElementById("fourth").checked)
+			endtime = "s4";
+		
+	}
+	if(endtime == "s0") {
+	alert("please select the time slot");
+	return ;
+	}
+	var name_val = mailid(room_name);
+	var attendees = name_val;
+	navigator.notification.activityStart("Booking...");
+  	window.plugins.Meeting.schedule(name_val,starttime,endtime,attendees,
+  	function(success) {
+  	navigator.notification.activityStop();
+  	navigator.notification.alert(
+            'Conference room booked',  // message
+            alertDismissed,         // callback
+            'SUCCEESS',            // title
+            'OK'                  // buttonName
+        );
+  	 
+  	navigator.app.loadUrl("file:///android_asset/www/index.html");
+  	},function(fail) {
+  	//console.log("error in booking the room");
+  	navigator.notification.alert(
+            'Booking failed..',  // message
+            alertDismissed,         // callback
+            'OOPS!!!',            // title
+            'Try Again'                  // buttonName
+        );
+  	 navigator.notification.activityStop();
+  	navigator.app.loadUrl("file:///android_asset/www/index.html");
+  	});
+	
+
+}
+function alertDismissed() {
+        // do something
+    }
+   function alertDismissed1() {
+   		navigator.app.exitApp();
+       // navigator.app.loadUrl("file:///android_asset/www/login.html");
+    }
+function mailid(room_name)
+{
+	var rParts = room_name.split(".");
+	var roomMailId = "cr-NB-"+building+"."+rParts[1]+"."+rParts[2]+"@netapp.com";
+	//alert("mail-id="+roomMailId);
+	return roomMailId;
+
+}
+function init_status()
+ {
+  console.log("inside the init_status function of suggestions");
+  var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        var newHTML="<br>";
+        for (var i = 0; i < vars.length-1; i++) {
+            var pair = vars[i].split("=");
+            //alert(pair[0]+"="+decodeURIComponent(pair[1]));
+            newHTML += '<div id="room_style" onclick="greet1(this.innerHTML)">'+'<a href="#">'+"Room : "+room_name(pair[0])+"<br><hr><br>"+status(decodeURIComponent(pair[1]))+"</a><br></div><br>";
+        }
+        var roomList = document.getElementById("roomlist");
+        roomList.innerHTML = newHTML; 
+        time = vars[vars.length-1].split("=");
+ 		//alert("time-->"+time[0]+time[1]);
+}
+ 
+function room_name(name_val)
+{
+	console.log("the conf room name is.."+name_val);
+	var roomName1 = name_val.split("-");
+	var roomName = roomName1[1]+".";
+	var roomName2 = roomName1[2].split(".");
+	roomName += roomName2[1]+".";
+	building = roomName2[0];
+	var roomName3 = roomName2[2].split("@");
+	roomName += roomName3[0];
+	
+	return roomName;
+
+}
+function status(stat)
+{
+	switch(stat)
+	{
+		case "000" : return "Free for next 90 minutes";
+		
+		case "444" : return "Unable to fetch status";
+		
+		case "002" : return "Free for next 60 minutes";
+		
+		case "020" : return "Free for next 30 minutes";
+		
+		case "022" : return "Free for next 30 minutes";
+		
+		case "200" : return "Busy for next 30 minutes";
+		
+		case "202" : return "Busy for next 30 minutes";
+		
+		case "220" : return "Busy for next 60 minutes";
+		
+		case "222" : return "Busy for next 90 minutes";
+		
+		default : return "status not known";
+		
+	}
+}
+ var preventBehavior = function(e) { 
+      e.preventDefault(); 
+    };
+
+	  document.addEventListener("backbutton", function () { 
+        //alert('Back button');
+        history.go(-1); 
+        navigator.app.backHistory(); 
+    }, false); 
+
+</script>
+</head>
+<body onload="init_status()">
+
+<center> <h1>Suggestions</h1> </center>
+<p id="roomlist"></p>
+
+</body>
+</html>
